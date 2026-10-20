@@ -62,7 +62,7 @@ There is a smaller gap too. Anika's log reports 14 minutes to her first flag, bu
 
 **Final designs (Figma):** https://www.figma.com/design/6xILGqurhKPLRyw19t8xMH/Gostride?node-id=31-2  
 **Clickable prototype (early style):** https://ofego.github.io/ajaia-bindflow/prototype/  
-**Repo:** https://github.com/Ofego/ajaia-bindflow. It has three screens, with each human checkpoint marked in a purple dashed box.
+**Repo:** https://github.com/Ofego/ajaia-bindflow. It has three screens, with each human checkpoint marked by a purple "Your call" badge.
 
 ### User journey (Anika, one submission)
 
