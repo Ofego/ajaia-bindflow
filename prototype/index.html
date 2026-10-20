@@ -98,6 +98,12 @@ h2{font-size:17px;font-weight:600;margin:0 0 12px}
 .pill{display:inline-flex;gap:6px;align-items:center;padding:5px 10px;border-radius:99px;font-size:13px;font-weight:500;white-space:nowrap}
 .p-vio{background:var(--vio-bg);color:var(--vio)}.p-red{background:var(--red-bg);color:var(--red)}.p-amb{background:var(--amb-bg);color:var(--amb)}.p-grn{background:var(--grn-bg);color:var(--grn)}
 
+.next{display:flex;gap:10px;align-items:center;margin:18px 0 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.14);color:var(--soft);font-size:14px}
+.next span{white-space:nowrap;font:600 11px "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.12);padding:3px 8px;border-radius:99px}
+.handoff{display:grid;gap:14px}
+.review{display:inline-flex;gap:6px;align-items:center;margin-left:10px;min-height:36px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surf);color:var(--ink);font-weight:600;font-size:14px;transition:transform .16s var(--ease)}
+.review:active{transform:scale(.97)}
+td:last-child{white-space:nowrap}
 /* compare band */
 .band{background:var(--surf);border-radius:var(--r);box-shadow:var(--shadow);padding:32px 36px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;margin-bottom:24px}
 .fig label{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:14px;font-weight:500}
@@ -145,7 +151,8 @@ footer a{color:var(--acc)}
   .tbl td{border:0;padding:0}
   .tbl td:nth-child(2){text-align:right}
   .tbl td:nth-child(3){grid-column:1}
-  .tbl td:nth-child(4){grid-column:2;grid-row:2;justify-self:end}
+  .tbl td:nth-child(4){grid-column:1 / -1;grid-row:auto;justify-self:start;white-space:normal;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .review{margin-left:0}
   .band{padding:24px;gap:16px}
   .ne{width:44px;height:44px}
   .decision{padding:22px}
@@ -216,10 +223,11 @@ footer a{color:var(--acc)}
       <h2>Is this fax Cortland's loss runs (their past insurance claims)?</h2>
       <p>The business name matches, but the account number is too blurry to read. Bindflow only files papers by itself when it's at least 90% sure. If another customer's claims history ended up in this file, nobody would notice later.</p>
       <div class="btns" data-replace>
-        <button class="btn pri" data-done="Filed under Cortland by you · saved to history"><svg width="16" height="16"><use href="#i-check"/></svg>Yes, it's Cortland's</button>
+        <button class="btn pri" id="d1yes"><svg width="16" height="16"><use href="#i-check"/></svg>Yes, it's Cortland's</button>
         <button class="btn sec">Belongs to another customer</button>
         <button class="btn sec">View the full fax</button>
       </div>
+      <p class="next" id="nexthint"><span>Up next</span>Halvorsen Logistics · amounts don't match</p>
     </div>
   </div>
 
@@ -228,7 +236,7 @@ footer a{color:var(--acc)}
     <thead><tr><th>Customer</th><th>Papers in</th><th>Sent by</th><th>Status</th></tr></thead>
     <tbody>
       <tr><td>Cortland Tool &amp; Die<small>Workers' comp: covers injured staff</small></td><td class="mono">5 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Website</span><span><svg width="15" height="15"><use href="#i-fax"/></svg>Fax</span></div></td><td><span class="pill p-vio"><svg width="14" height="14"><use href="#i-user"/></svg>Needs your check</span></td></tr>
-      <tr><td>Halvorsen Logistics<small>Liability: $2M yearly limit</small></td><td class="mono">5 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Website</span><span><svg width="15" height="15"><use href="#i-mail"/></svg>Email</span></div></td><td><button class="pill p-red" style="border:0" data-go="2"><svg width="14" height="14"><use href="#i-alert"/></svg>Amounts don't match</button></td></tr>
+      <tr><td>Halvorsen Logistics<small>Liability: $2M yearly limit</small></td><td class="mono">5 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Website</span><span><svg width="15" height="15"><use href="#i-mail"/></svg>Email</span></div></td><td><span class="pill p-red"><svg width="14" height="14"><use href="#i-alert"/></svg>Amounts don't match</span><button class="review" data-go="2">Review<svg width="14" height="14"><use href="#i-arrow"/></svg></button></td></tr>
       <tr><td>Pine Ridge Dental<small>Small-business bundle: $1M</small></td><td class="mono" style="color:var(--amb)">4 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Website</span></div></td><td><span class="pill p-amb"><svg width="14" height="14"><use href="#i-clock"/></svg>Claims history missing</span></td></tr>
       <tr><td>Easton Bakery Co.<small>Liability: $1M yearly limit</small></td><td class="mono">5 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Website</span></div></td><td><span class="pill p-grn"><svg width="14" height="14"><use href="#i-check"/></svg>All papers in</span></td></tr>
     </tbody>
@@ -326,6 +334,13 @@ function go(n){
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.go)));
 document.querySelectorAll('[data-done]').forEach(b=>b.addEventListener('click',()=>{
   const wrap=b.closest('[data-replace]');wrap.innerHTML='<span class="done-msg" role="status"><svg width="16" height="16"><use href="#i-check"/></svg>'+b.dataset.done+'</span>';}));
+document.getElementById('d1yes').addEventListener('click',()=>{
+  const card=document.getElementById('d1');card.querySelector('[data-replace]').outerHTML=
+  '<div class="handoff"><span class="done-msg" role="status"><svg width="16" height="16"><use href="#i-check"/></svg>Filed under Cortland by you · saved to history</span>'+
+  '<div><p class="next" style="border:0;padding:0;margin:0 0 10px"><span>Up next</span>Halvorsen Logistics · amounts don\'t match</p>'+
+  '<button class="btn pri" data-go="2" id="gonext">Open Halvorsen\'s file<svg width="16" height="16"><use href="#i-arrow"/></svg></button></div></div>';
+  document.getElementById('nexthint').remove();
+  const b=document.getElementById('gonext');b.addEventListener('click',()=>go(2));b.focus();});
 document.querySelectorAll('h1').forEach(h=>h.tabIndex=-1);
 const bcs=[...document.querySelectorAll('.bc')],bind=document.getElementById('bind');
 bcs.forEach(c=>c.addEventListener('change',()=>{const ok=bcs.every(x=>x.checked);bind.disabled=!ok;
