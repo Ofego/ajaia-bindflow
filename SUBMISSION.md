@@ -76,9 +76,11 @@ There is a smaller gap too. Anika's log reports 14 minutes to her first flag, bu
 
 ### Screens
 
-1. **Submission queue.** Documents from every channel are grouped by submission, with a status column showing what's missing and what doesn't match. **Checkpoint A:** a fax with an unclear policy number is matched at 71% confidence, so a human confirms it before it's attached. Attaching the wrong client's loss runs is an error the checklist can't catch later.
-2. **Reconcile.** The familiar checklist sits on the left. On the right, values are compared across documents, with the mismatch highlighted (application $2M aggregate vs certificate $1M). **Checkpoint B:** the human confirms the mismatch, because the values came from a possibly misread scan, and a false flag costs a 2-day round trip with the broker.
-3. **Broker loop & bind.** A drafted request states the exact discrepancy and includes an upload link. **Checkpoint C:** nothing goes to a broker without the assistant's approval, because it's a client relationship. A "waiting on brokers" list brings anything older than 4 days to the top. **Checkpoint D:** the bind button stays disabled until the corrected document has been re-compared and the assistant attests to reviewing every flag. The tool never binds a policy itself.
+1. **Collect papers (the work queue).** Bindflow gathers every paper from the website, email and fax, and groups them by customer. The status column shows what's missing and what doesn't match, and problem rows have a **Review** button. **Checkpoint A:** a blurry fax is only 71% likely to be Cortland's loss runs (their past claims history). Bindflow only files papers by itself above 90%, so a person confirms. Filing another customer's claims history by mistake is an error the checklist can't catch later. Once she confirms, the card hands her the next job: **"Open Halvorsen's file"**.
+2. **Check they match.** The amounts from both papers are shown large, side by side: the customer asked for **$2M** of yearly cover, but the broker's certificate shows **$1M**. The checklist the team already knows is unchanged and ticks itself from the papers. **Checkpoint B:** a person confirms the mismatch is real, because the numbers were read from a scan and a false alarm costs a two-day wait.
+3. **Fix & approve.** Bindflow drafts one clear email naming the exact problem, with a one-click upload link for the broker. **Checkpoint C:** nothing is sent to a broker without the assistant's OK, because it's a client relationship. A chart shows how long each broker has been waiting, and anything past 4 days is flagged to a manager. **Checkpoint D:** the insurance can't start ("bind") until the corrected paper is checked again and the assistant confirms she reviewed every warning. She then signs off by name. The tool never starts insurance by itself.
+
+Insurance terms (loss runs, certificate, bind) stay on screen because they're the team's daily language, but each one has a plain-English explanation beside it.
 
 ### Where AI is used, and where it isn't
 
@@ -95,14 +97,13 @@ Answering Owen's list:
 
 ## Task 3. AI workflow note
 
-- **What I used AI for:**
-  - Pulling every numeric claim out of the four materials and cross-checking them against each other.
-  - Building the first draft of the evidence table.
-  - Generating the HTML prototype from my written screen specs.
-  - Drafting the likely objections Owen would raise, so I could rehearse.
-- **What I kept human:**
-  - Deciding that the broker loop, which isn't on anyone's wishlist, is the biggest cost.
-  - Choosing where the four checkpoints go and why.
-  - Choosing which wishlist items to defer rather than build.
-- **One thing I checked and rejected.** An early AI draft treated Anika's "smart autofill" request as validating Owen's first bullet. I rejected it, because the same transcript shows her pain is the broker loop, and Colin's log puts the checklist at 3 minutes.
-- **One thing I checked and corrected.** The AI first wrote a mismatch rate of "about a third" for both assistants. Recomputed, it's 38% for Anika and 35% for Colin, so I cite the exact figures.
+**Where I used AI:** I used Claude to pull every number out of the four materials and cross-check them, to draft the evidence table, to build the Figma screens and the clickable prototype from my direction, and to play Owen so I could rehearse the pushback.
+
+**What I kept human:** deciding that the broker wait, which isn't on anyone's wishlist, is the biggest cost. Deciding where the four human checkpoints go and why. Deciding which wishlist items to defer. And judging whether the design was actually good.
+
+**What the AI got wrong, and I pushed back on:**
+- **The first design was plain and flat.** Every box had equal weight, so your eye had nowhere to land. I had it apply proper design and accessibility guidance and give each screen one clear focal point.
+- **The wording was full of insurance jargon** that someone outside the industry couldn't follow. I had it rewrite every screen in plain English and keep the industry terms only with a short explanation beside them.
+- **It linked screen 1 to screen 2 through a status label**, while the biggest button on the screen led nowhere. I flagged that as poor UX. Now each decision hands the assistant the next job with a clear button.
+
+**What I chose not to use:** Owen asked for an AI chatbot. I left it out on purpose: neither assistant said they need to ask questions. Their time goes to finding papers and waiting on brokers, so the AI does those jobs instead.
