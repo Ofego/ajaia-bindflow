@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bindflow Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f2ed;--surface:#fff;--ink:#1b1d1f;--muted:#5f646b;--line:#dcd8cf;--accent:#1f4e79;--warn:#a35a00;--warn-bg:#fff3e0;--ok:#2e6b3f;--ok-bg:#e7f3ea;--bad:#a12a2a;--bad-bg:#fbeaea;--human:#5b3fa0;--human-bg:#f0ebfa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171a;--surface:#1e2125;--ink:#ecebe7;--muted:#a3a8ae;--line:#33373d;--accent:#7fb0e0;--warn:#f0b062;--warn-bg:#3a2b15;--ok:#7cc994;--ok-bg:#1c3324;--bad:#ee8a8a;--bad-bg:#3a1c1c;--human:#b9a3f0;--human-bg:#2a2340}}
+:root[data-theme="dark"]{--bg:#15171a;--surface:#1e2125;--ink:#ecebe7;--muted:#a3a8ae;--line:#33373d;--accent:#7fb0e0;--warn:#f0b062;--warn-bg:#3a2b15;--ok:#7cc994;--ok-bg:#1c3324;--bad:#ee8a8a;--bad-bg:#3a1c1c;--human:#b9a3f0;--human-bg:#2a2340}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:13px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--surface)}
+header b{font-size:17px;letter-spacing:-.01em}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{font:inherit;font-size:14px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 12px;border-radius:6px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+nav button:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{max-width:1120px;margin:0 auto;padding:24px 16px 64px}
+.screen{display:none}.screen.on{display:block}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:0 0 20px}
+.why{border-left:3px solid var(--accent);padding:8px 14px;background:var(--surface);margin:0 0 20px;font-size:14px;color:var(--muted)}
+.why b{color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.scroll{overflow-x:auto}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
+.t-ok{background:var(--ok-bg);color:var(--ok)}.t-warn{background:var(--warn-bg);color:var(--warn)}.t-bad{background:var(--bad-bg);color:var(--bad)}
+.human{border:1.5px dashed var(--human);background:var(--human-bg);border-radius:8px;padding:14px 16px;margin:16px 0}
+.human .lbl{font-size:12px;font-weight:600;color:var(--human);text-transform:uppercase;letter-spacing:.05em}
+.btn{font:inherit;font-size:14px;border-radius:6px;padding:8px 14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.doc{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--bg)}
+.doc h3{margin:0 0 6px;font-size:14px}
+mark{background:var(--warn-bg);color:var(--warn);padding:0 3px;border-radius:3px}
+textarea{width:100%;min-height:150px;font:inherit;font-size:14px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+label{font-size:14px;display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.stat{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.foot{margin-top:40px;font-size:13px;color:var(--muted)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <b>Bindflow <span class="mono" style="color:var(--muted);font-weight:400">· Marsh &amp; Colby · prototype</span></b>
+  <nav role="tablist">
+    <button role="tab" aria-selected="true" data-s="s1">1 · Documents arrive</button>
+    <button role="tab" aria-selected="false" data-s="s2">2 · Reconcile</button>
+    <button role="tab" aria-selected="false" data-s="s3">3 · Broker loop &amp; bind</button>
+  </nav>
+</header>
+<main>
+
+<section class="screen on" id="s1">
+  <h1>Submission queue</h1>
+  <p class="sub">Documents from the portal, broker email and fax are collected and attached to their submission automatically.</p>
+  <p class="why"><b>Why this screen:</b> Colin spends 11 min locating documents vs 3 min on the checklist. 17 of 54 submissions had a document arrive outside the portal.</p>
+  <div class="card scroll">
+  <table>
+    <thead><tr><th>Submission</th><th>Docs found</th><th>Sources</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><b>Halvorsen Logistics</b><br><span class="mono">GL · $2M agg</span></td><td>5 / 5</td><td>Portal, Email</td><td><span class="tag t-bad">Limit mismatch</span></td></tr>
+      <tr><td><b>Pine Ridge Dental</b><br><span class="mono">BOP · $1M</span></td><td>4 / 5</td><td>Portal</td><td><span class="tag t-warn">Loss runs missing</span></td></tr>
+      <tr><td><b>Cortland Tool &amp; Die</b><br><span class="mono">WC · statutory</span></td><td>5 / 5</td><td>Portal, Fax</td><td><span class="tag t-warn">1 match needs you</span></td></tr>
+      <tr><td><b>Easton Bakery Co.</b><br><span class="mono">GL · $1M</span></td><td>5 / 5</td><td>Portal</td><td><span class="tag t-ok">Ready to check</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="human">
+    <div class="lbl">Human checkpoint · low-confidence match</div>
+    <p style="margin:6px 0 0">A fax scan, <span class="mono">FAX_0412_p3.pdf</span>, looks like <b>loss runs for Cortland Tool &amp; Die</b> (named insured matches, policy number unreadable). Confidence 71%.</p>
+    <p style="margin:6px 0 0;color:var(--muted);font-size:14px">Why a human: attaching the wrong client's loss runs to a submission is a binding error that the checklist won't catch later. Below 90% confidence, the tool asks you before it attaches anything.</p>
+    <div class="row"><button class="btn primary" onclick="this.parentNode.innerHTML='<span class=&quot;tag t-ok&quot;>Attached by you · logged</span>'">Yes, attach to Cortland</button><button class="btn">Wrong submission</button><button class="btn">Open scan</button></div>
+  </div>
+</section>
+
+<section class="screen" id="s2">
+  <h1>Halvorsen Logistics · reconcile</h1>
+  <p class="sub">The checklist stays as it is. Values are pulled from each document and compared with each other, side by side.</p>
+  <p class="why"><b>Why this screen:</b> 23 of 61 (Anika) and 19 of 54 (Colin) submissions had a coverage-limit mismatch, about 36%. Today assistants catch these by reading carefully.</p>
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin-top:0">Checklist</h3>
+      <label><input type="checkbox" checked disabled> Certificate of insurance received</label>
+      <label><input type="checkbox" checked disabled> Loss runs (5 yrs) received</label>
+      <label><input type="checkbox" checked disabled> Application signed</label>
+      <label><input type="checkbox" disabled> <span>Coverage limits match application <span class="tag t-bad">1 mismatch</span></span></label>
+      <label><input type="checkbox" checked disabled> Named insured consistent</label>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Mismatch found</h3>
+      <div class="cmp">
+        <div class="doc"><h3>Application</h3><span class="mono">Each occurrence: $1,000,000<br>Aggregate: <mark>$2,000,000</mark></span></div>
+        <div class="doc"><h3>Certificate (broker email, 3 Oct)</h3><span class="mono">Each occurrence: $1,000,000<br>Aggregate: <mark>$1,000,000</mark></span></div>
+      </div>
+      <div class="human">
+        <div class="lbl">Human checkpoint · confirm the discrepancy</div>
+        <p style="margin:6px 0 0;font-size:14px">The tool extracted these values; it can misread a scan. You confirm the mismatch is real before anyone emails the broker. A false flag costs a 2-day round trip.</p>
+        <div class="row"><button class="btn primary" onclick="go('s3')">Confirm mismatch → request from broker</button><button class="btn">Values are correct, misread</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s3">
+  <h1>Broker request &amp; bind</h1>
+  <p class="sub">A structured request with the exact discrepancy, tracked until the broker replies. Binding stays locked until every item is resolved.</p>
+  <p class="why"><b>Why this screen:</b> Anika's median wait from flag to broker reply is 2.1 days, and 9 submissions took more than 4 days. She calls this the part she hates.</p>
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin-top:0">Request to broker · draft</h3>
+      <textarea aria-label="Email to broker">Hi Dana,
+
+For Halvorsen Logistics (GL), the certificate dated 3 Oct shows a $1,000,000 aggregate, but the signed application requests $2,000,000.
+
+Could you send a corrected certificate, or confirm the client accepted $1M? One-click upload link: bindflow.link/h7Kq
+
+Thanks,
+Anika</textarea>
+      <div class="human">
+        <div class="lbl">Human checkpoint · you send it</div>
+        <p style="margin:6px 0 0;font-size:14px">Drafted from the confirmed mismatch. Nothing goes to a broker without your approval: it's a client relationship, and the tone is yours.</p>
+        <div class="row"><button class="btn primary" onclick="this.closest('.human').innerHTML='<span class=&quot;tag t-ok&quot;>Sent 09:14 · auto-reminder in 24h if no reply</span>'">Approve &amp; send</button><button class="btn">Edit</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Waiting on brokers</h3>
+      <table><tbody>
+        <tr><td>Halvorsen · Dana K.</td><td><span class="tag t-warn">0.1 d</span></td></tr>
+        <tr><td>Pine Ridge · loss runs</td><td><span class="tag t-warn">1.8 d · reminded</span></td></tr>
+        <tr><td>Marlow Freight · COI</td><td><span class="tag t-bad">4.3 d · escalate?</span></td></tr>
+      </tbody></table>
+      <p style="font-size:13px;color:var(--muted)">Assistants can see every open request in one place, and items over 4 days rise to the top.</p>
+      <h3>Bind</h3>
+      <label><input type="checkbox" id="c1" onchange="chk()"> Corrected certificate received &amp; values re-compared</label>
+      <label><input type="checkbox" id="c2" onchange="chk()"> I reviewed every flagged item on this submission</label>
+      <div class="human" style="margin-top:8px">
+        <div class="lbl">Human checkpoint · bind sign-off</div>
+        <p style="margin:6px 0 0;font-size:14px">Binding makes coverage active and it can't be undone, so a named assistant makes the final call. The tool never binds.</p>
+        <div class="row"><button class="btn primary" id="bind" disabled>Bind policy as Anika Shah</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<p class="foot">Prototype by Arerosuoghene Omujale for the <a href="https://ajaia.ai">Ajaia</a> Design Lead assessment. Sample data is illustrative.</p>
+</main>
+<script>
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===id));scrollTo(0,0)}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.s));
+function chk(){document.getElementById('bind').disabled=!(c1.checked&&c2.checked)}
+</script>
+</body>
+</html>
