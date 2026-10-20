@@ -4,161 +4,335 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bindflow Prototype</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="description" content="Clickable prototype for the Ajaia Design Lead assessment: Bindflow, an underwriting workflow for Marsh & Colby.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f2ed;--surface:#fff;--ink:#1b1d1f;--muted:#5f646b;--line:#dcd8cf;--accent:#1f4e79;--warn:#a35a00;--warn-bg:#fff3e0;--ok:#2e6b3f;--ok-bg:#e7f3ea;--bad:#a12a2a;--bad-bg:#fbeaea;--human:#5b3fa0;--human-bg:#f0ebfa}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171a;--surface:#1e2125;--ink:#ecebe7;--muted:#a3a8ae;--line:#33373d;--accent:#7fb0e0;--warn:#f0b062;--warn-bg:#3a2b15;--ok:#7cc994;--ok-bg:#1c3324;--bad:#ee8a8a;--bad-bg:#3a1c1c;--human:#b9a3f0;--human-bg:#2a2340}}
-:root[data-theme="dark"]{--bg:#15171a;--surface:#1e2125;--ink:#ecebe7;--muted:#a3a8ae;--line:#33373d;--accent:#7fb0e0;--warn:#f0b062;--warn-bg:#3a2b15;--ok:#7cc994;--ok-bg:#1c3324;--bad:#ee8a8a;--bad-bg:#3a1c1c;--human:#b9a3f0;--human-bg:#2a2340}
+:root{
+  --ink:#0e1a2b;--paper:#f5f3ee;--surf:#fff;--line:#e0dcd3;--muted:#4a5363;--soft:#b8c2d4;
+  --acc:#03699f;--red:#b3380a;--red-bg:#fdede4;--amb:#945905;--amb-bg:#fef6e0;
+  --grn:#14732f;--grn-bg:#e8f5ec;--vio:#5b3fa0;--vio-bg:#f1ecfb;--seal:#8b71de;
+  --r:20px;--shadow:0 12px 32px -8px rgba(14,26,43,.18),0 2px 4px rgba(14,26,43,.06);
+  --ease:cubic-bezier(.23,1,.32,1);
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}
-.mono{font-family:"IBM Plex Mono",monospace;font-size:13px}
-header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--surface)}
-header b{font-size:17px;letter-spacing:-.01em}
-nav{display:flex;gap:4px;flex-wrap:wrap}
-nav button{font:inherit;font-size:14px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 12px;border-radius:6px;cursor:pointer}
-nav button[aria-selected="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
-nav button:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-main{max-width:1120px;margin:0 auto;padding:24px 16px 64px}
-.screen{display:none}.screen.on{display:block}
-h1{font-size:24px;margin:0 0 4px;letter-spacing:-.02em}
-.sub{color:var(--muted);margin:0 0 20px}
-.why{border-left:3px solid var(--accent);padding:8px 14px;background:var(--surface);margin:0 0 20px;font-size:14px;color:var(--muted)}
-.why b{color:var(--ink)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width:760px){.grid{grid-template-columns:1fr}}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-weight:500;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
-.scroll{overflow-x:auto}
-.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
-.t-ok{background:var(--ok-bg);color:var(--ok)}.t-warn{background:var(--warn-bg);color:var(--warn)}.t-bad{background:var(--bad-bg);color:var(--bad)}
-.human{border:1.5px dashed var(--human);background:var(--human-bg);border-radius:8px;padding:14px 16px;margin:16px 0}
-.human .lbl{font-size:12px;font-weight:600;color:var(--human);text-transform:uppercase;letter-spacing:.05em}
-.btn{font:inherit;font-size:14px;border-radius:6px;padding:8px 14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.doc{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--bg)}
-.doc h3{margin:0 0 6px;font-size:14px}
-mark{background:var(--warn-bg);color:var(--warn);padding:0 3px;border-radius:3px}
-textarea{width:100%;min-height:150px;font:inherit;font-size:14px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
-label{font-size:14px;display:flex;gap:8px;align-items:flex-start;margin:6px 0}
-.stat{font-size:28px;font-weight:600;letter-spacing:-.02em}
-.foot{margin-top:40px;font-size:13px;color:var(--muted)}
-a{color:var(--accent)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+::selection{background:var(--ink);color:#fff}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+svg{flex:none}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px;border-radius:8px}
+
+.app{display:grid;grid-template-columns:72px 1fr;min-height:100dvh}
+.rail{background:var(--ink);display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 0;position:sticky;top:0;height:100dvh}
+.logo{width:36px;height:36px;border-radius:9px;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700;margin-bottom:8px}
+.rail a{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;color:var(--soft)}
+.rail a[aria-current]{background:rgba(255,255,255,.12);color:#fff}
+
+.top{background:var(--surf);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 40px;flex-wrap:wrap}
+.crumbs{display:flex;gap:8px;align-items:baseline;white-space:nowrap}
+.crumbs b{font-weight:700}.crumbs span{color:var(--muted)}
+.steps{display:flex;align-items:center;gap:4px;list-style:none;margin:0;padding:0}
+.steps button{display:flex;align-items:center;gap:8px;border:0;background:none;padding:8px 12px;border-radius:99px;color:var(--muted);font-size:14px;font-weight:500;min-height:44px;transition:background-color .2s var(--ease),color .2s var(--ease)}
+.steps button:active{transform:scale(.97)}
+.steps .dot{width:22px;height:22px;border-radius:99px;display:grid;place-items:center;background:var(--paper);font:600 12px "IBM Plex Mono",monospace}
+.steps [aria-current="step"]{background:var(--ink);color:#fff;font-weight:600}
+.steps [aria-current="step"] .dot{background:#fff;color:var(--ink)}
+.steps .done{color:var(--grn)}.steps .done .dot{background:var(--grn-bg);color:var(--grn)}
+.steps .sep{color:var(--line)}
+
+main{padding:40px;max-width:1240px}
+h1[tabindex]:focus{outline:none}
+.steps button{white-space:nowrap}
+.upl small{display:block;font:13px 'IBM Plex Mono',monospace;color:var(--muted)}
+.screen{display:none}.screen.on{display:block;animation:in .35s var(--ease)}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+h1{font-size:clamp(28px,2rem + 1vw,40px);line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:0 0 10px;text-wrap:balance}
+.sub{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;color:var(--muted);margin:0 0 28px}
+.metric{display:inline-flex;gap:6px;align-items:center;background:var(--grn-bg);color:var(--grn);font-size:13px;font-weight:500;padding:4px 10px;border-radius:6px}
+
+.row{display:grid;gap:24px;align-items:start}
+.r1{grid-template-columns:300px 1fr}.r2{grid-template-columns:420px 1fr}.r3{grid-template-columns:1fr 440px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.flat{background:transparent}
+h2{font-size:17px;font-weight:600;margin:0 0 12px}
+.hint{font-size:14px;color:var(--muted);margin:0}
+
+/* decision = focal dark tile */
+.decision{background:var(--ink);color:#fff;border-radius:var(--r);padding:28px;box-shadow:var(--shadow)}
+.decision h2{font-size:clamp(20px,1.2rem + .4vw,24px);line-height:1.25;margin:14px 0 10px;color:#fff}
+.decision p{color:var(--soft);margin:0 0 20px;max-width:68ch}
+.seal{display:inline-flex;gap:8px;align-items:center;background:var(--seal);color:#fff;font-size:13px;font-weight:600;padding:6px 12px;border-radius:99px;letter-spacing:.02em}
+.seal.light{background:var(--vio)}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:10px;font-weight:600;font-size:15px;border:1px solid transparent;transition:transform .16s var(--ease),background-color .2s var(--ease)}
+.btn:active{transform:scale(.97)}
+.decision .btn.pri{background:#fff;color:var(--ink)}
+.decision .btn.sec{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
+@media (hover:hover){.decision .btn.sec:hover{background:rgba(255,255,255,.08)}.decision .btn.pri:hover{background:#eef1f6}}
+.btn:disabled{background:var(--paper);color:var(--muted);cursor:not-allowed;border-color:var(--line)}
+.done-msg{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);padding:10px 14px;border-radius:10px;font-weight:500}
+
+/* fax */
+.fax-name{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:13px;margin-bottom:12px}
+.sheet{background:#f7f6f2;border:1px solid var(--line);border-radius:6px;padding:16px;font:12px/1.5 "IBM Plex Mono",monospace}
+.sheet b{display:block;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.sheet .bad{color:var(--red)}
+.sheet i{display:block;height:6px;border-radius:3px;background:var(--line);margin-top:9px}
+.conf{margin-top:16px;font-size:13px}
+.conf div:first-child{display:flex;justify-content:space-between;color:var(--muted)}
+.conf strong{color:var(--amb)}
+.track{position:relative;height:8px;border-radius:4px;background:var(--paper);margin:6px 0}
+.track span{position:absolute;inset:0 auto 0 0;border-radius:4px}
+.track em{position:absolute;top:-3px;width:2px;height:14px;background:var(--ink)}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;margin-top:8px}
+.tbl th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:10px 16px 10px 0;border-bottom:1px solid var(--line)}
+.tbl td{padding:16px 16px 16px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl small{display:block;color:var(--muted);font:13px "IBM Plex Mono",monospace}
+.via{display:flex;gap:12px;color:var(--muted);font-size:14px;flex-wrap:wrap}
+.via span{display:inline-flex;gap:5px;align-items:center}
+.pill{display:inline-flex;gap:6px;align-items:center;padding:5px 10px;border-radius:99px;font-size:13px;font-weight:500;white-space:nowrap}
+.p-vio{background:var(--vio-bg);color:var(--vio)}.p-red{background:var(--red-bg);color:var(--red)}.p-amb{background:var(--amb-bg);color:var(--amb)}.p-grn{background:var(--grn-bg);color:var(--grn)}
+
+/* compare band */
+.band{background:var(--surf);border-radius:var(--r);box-shadow:var(--shadow);padding:32px 36px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;margin-bottom:24px}
+.fig label{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:14px;font-weight:500}
+.fig .num{font:600 clamp(36px,2rem + 2vw,56px)/1.1 "IBM Plex Mono",monospace;letter-spacing:-.03em;margin:6px 0}
+.fig small{color:var(--muted);font-size:13px}
+.ne{width:56px;height:56px;border-radius:99px;background:var(--red-bg);color:var(--red);display:grid;place-items:center}
+.check{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.check li{display:flex;gap:10px;align-items:center}
+.box{width:20px;height:20px;border-radius:5px;display:grid;place-items:center;background:var(--grn);color:#fff}
+.box.x{background:var(--red-bg);color:var(--red);border:1px solid var(--red)}
+.check .warn{color:var(--red);font-weight:600}
+
+/* email */
+.meta{display:grid;grid-template-columns:72px 1fr;gap:4px 12px;font-size:14px;margin-bottom:16px}
+.meta dt{color:var(--soft)}.meta dd{margin:0;font-weight:500}
+.letter{background:var(--paper);color:var(--ink);border-radius:12px;padding:20px;margin-bottom:20px}
+.letter p{margin:0 0 12px;color:var(--ink)}
+.upl{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;color:var(--acc);font-weight:500;font-size:14px;margin-bottom:12px;}
+.decision .foot{font-size:14px;margin:16px 0 0}
+.wait{display:grid;gap:14px}
+.wait .l{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.side{display:grid;gap:20px}
+.lock{display:flex;gap:10px;align-items:center}
+label.c{display:flex;gap:10px;align-items:flex-start;margin:12px 0;cursor:pointer}
+label.c input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ink)}
+.signed{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+.btn.bind{background:var(--ink);color:#fff;margin-top:6px}
+.btn.bind:disabled{background:var(--paper);color:var(--muted);border-color:var(--line)}
+footer{padding:32px 40px 48px;color:var(--muted);font-size:14px;max-width:1240px}
+footer a{color:var(--acc)}
+
+/* responsive */
+@media (max-width:1100px){.r1,.r2,.r3{grid-template-columns:1fr}.r1 .fax{max-width:420px}}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .rail{position:sticky;top:0;z-index:5;height:auto;flex-direction:row;justify-content:flex-start;padding:10px 16px;gap:8px}
+  .logo{margin:0 8px 0 0}
+  .top{padding:10px 16px}
+  main{padding:24px 16px}
+  footer{padding:24px 16px 40px}
+  .steps .lbl{display:none}
+  .steps [aria-current="step"] .lbl{display:inline}
+  .tbl thead{display:none}
+  .tbl tr{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .tbl td{border:0;padding:0}
+  .tbl td:nth-child(2){text-align:right}
+  .tbl td:nth-child(3){grid-column:1}
+  .tbl td:nth-child(4){grid-column:2;grid-row:2;justify-self:end}
+  .band{padding:24px;gap:16px}
+  .ne{width:44px;height:44px}
+  .decision{padding:22px}
+  .meta{grid-template-columns:1fr}
+  .meta dt{margin-top:4px}
+}
+@media (max-width:420px){.steps button{white-space:normal;padding:6px 8px}.btns .btn{width:100%;justify-content:center}.crumbs b,.crumbs span[aria-hidden]{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<header>
-  <b>Bindflow <span class="mono" style="color:var(--muted);font-weight:400">· Marsh &amp; Colby · prototype</span></b>
-  <nav role="tablist">
-    <button role="tab" aria-selected="true" data-s="s1">1 · Documents arrive</button>
-    <button role="tab" aria-selected="false" data-s="s2">2 · Reconcile</button>
-    <button role="tab" aria-selected="false" data-s="s3">3 · Broker loop &amp; bind</button>
-  </nav>
-</header>
-<main>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+ <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+ <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></symbol>
+ <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+ <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+ <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></symbol>
+ <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+ <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+ <symbol id="i-fax" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></symbol>
+ <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20"/></symbol>
+ <symbol id="i-ne" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="17" y1="4" x2="7" y2="20"/></symbol>
+ <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+</defs></svg>
 
-<section class="screen on" id="s1">
-  <h1>Submission queue</h1>
-  <p class="sub">Documents from the portal, broker email and fax are collected and attached to their submission automatically.</p>
-  <p class="why"><b>Why this screen:</b> Colin spends 11 min locating documents vs 3 min on the checklist. 17 of 54 submissions had a document arrive outside the portal.</p>
-  <div class="card scroll">
-  <table>
-    <thead><tr><th>Submission</th><th>Docs found</th><th>Sources</th><th>Status</th></tr></thead>
+<div class="app">
+<nav class="rail" aria-label="Main">
+  <div class="logo" aria-hidden="true">B</div>
+  <a href="#" aria-current="page" aria-label="Queue"><svg width="20" height="20"><use href="#i-inbox"/></svg></a>
+  <a href="#" aria-label="Documents"><svg width="20" height="20"><use href="#i-file"/></svg></a>
+  <a href="#" aria-label="Broker requests"><svg width="20" height="20"><use href="#i-mail"/></svg></a>
+  <a href="#" aria-label="History"><svg width="20" height="20"><use href="#i-clock"/></svg></a>
+</nav>
+
+<div>
+<header class="top">
+  <div class="crumbs"><b>Bindflow</b><span aria-hidden="true">/</span><span id="crumb">Queue</span></div>
+  <ol class="steps" aria-label="Binding steps">
+    <li><button data-go="1"><span class="dot">1</span><span class="lbl">Collect papers</span></button></li>
+    <li class="sep" aria-hidden="true"><svg width="14" height="14"><use href="#i-arrow"/></svg></li>
+    <li><button data-go="2"><span class="dot">2</span><span class="lbl">Check they match</span></button></li>
+    <li class="sep" aria-hidden="true"><svg width="14" height="14"><use href="#i-arrow"/></svg></li>
+    <li><button data-go="3"><span class="dot">3</span><span class="lbl">Fix &amp; approve</span></button></li>
+  </ol>
+</header>
+
+<main id="main">
+<!-- SCREEN 1 -->
+<section class="screen on" id="s1" aria-labelledby="h1a">
+  <h1 id="h1a">One fax needs you before Cortland can move.</h1>
+  <p class="sub"><span>4 submissions · papers gathered from portal, email and fax</span><span class="metric mono"><svg width="14" height="14"><use href="#i-clock"/></svg>Docs located 0:00 · was 11 min</span></p>
+  <div class="row r1">
+    <div class="card fax">
+      <div class="fax-name mono"><svg width="16" height="16"><use href="#i-fax"/></svg>FAX_0412_p3.pdf</div>
+      <div class="sheet" role="img" aria-label="Fax preview: loss run report, named insured Cortland Tool and Die, policy number unreadable">
+        <b>LOSS RUN REPORT</b>Named insured: Cortland Tool &amp; Die<br><span class="bad">Policy no.: ▒▒▒▒-▒▒7</span><i style="width:90%"></i><i style="width:70%"></i><i style="width:82%"></i><i style="width:55%"></i>
+      </div>
+      <div class="conf">
+        <div><span>Match confidence</span><strong class="mono">71%</strong></div>
+        <div class="track" role="meter" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100" aria-label="Match confidence"><span style="width:71%;background:var(--amb)"></span><em style="left:90%"></em></div>
+        <div class="hint" style="font-size:13px">Auto-attach threshold 90%</div>
+      </div>
+    </div>
+    <div class="decision" id="d1">
+      <span class="seal"><svg width="16" height="16"><use href="#i-user"/></svg>Your call</span>
+      <h2>Is this fax the loss runs for Cortland Tool &amp; Die?</h2>
+      <p>The insured name matches, but the policy number is unreadable. Below 90% confidence Bindflow never attaches on its own: the wrong client's loss runs in a binding file is an error the checklist can't catch later.</p>
+      <div class="btns" data-replace>
+        <button class="btn pri" data-done="Attached to Cortland by you · logged"><svg width="16" height="16"><use href="#i-check"/></svg>Yes, attach to Cortland</button>
+        <button class="btn sec">Different submission</button>
+        <button class="btn sec">Open full scan</button>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:40px">All submissions</h2>
+  <table class="tbl">
+    <thead><tr><th>Submission</th><th>Papers</th><th>Arrived via</th><th>Status</th></tr></thead>
     <tbody>
-      <tr><td><b>Halvorsen Logistics</b><br><span class="mono">GL · $2M agg</span></td><td>5 / 5</td><td>Portal, Email</td><td><span class="tag t-bad">Limit mismatch</span></td></tr>
-      <tr><td><b>Pine Ridge Dental</b><br><span class="mono">BOP · $1M</span></td><td>4 / 5</td><td>Portal</td><td><span class="tag t-warn">Loss runs missing</span></td></tr>
-      <tr><td><b>Cortland Tool &amp; Die</b><br><span class="mono">WC · statutory</span></td><td>5 / 5</td><td>Portal, Fax</td><td><span class="tag t-warn">1 match needs you</span></td></tr>
-      <tr><td><b>Easton Bakery Co.</b><br><span class="mono">GL · $1M</span></td><td>5 / 5</td><td>Portal</td><td><span class="tag t-ok">Ready to check</span></td></tr>
+      <tr><td>Cortland Tool &amp; Die<small>WC · statutory</small></td><td class="mono">5 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Portal</span><span><svg width="15" height="15"><use href="#i-fax"/></svg>Fax</span></div></td><td><span class="pill p-vio"><svg width="14" height="14"><use href="#i-user"/></svg>Needs your call</span></td></tr>
+      <tr><td>Halvorsen Logistics<small>GL · $2M aggregate</small></td><td class="mono">5 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Portal</span><span><svg width="15" height="15"><use href="#i-mail"/></svg>Email</span></div></td><td><button class="pill p-red" style="border:0" data-go="2"><svg width="14" height="14"><use href="#i-alert"/></svg>Limit mismatch</button></td></tr>
+      <tr><td>Pine Ridge Dental<small>BOP · $1M</small></td><td class="mono" style="color:var(--amb)">4 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Portal</span></div></td><td><span class="pill p-amb"><svg width="14" height="14"><use href="#i-clock"/></svg>Loss runs missing</span></td></tr>
+      <tr><td>Easton Bakery Co.<small>GL · $1M</small></td><td class="mono">5 / 5</td><td><div class="via"><span><svg width="15" height="15"><use href="#i-globe"/></svg>Portal</span></div></td><td><span class="pill p-grn"><svg width="14" height="14"><use href="#i-check"/></svg>Ready to check</span></td></tr>
     </tbody>
   </table>
-  </div>
-  <div class="human">
-    <div class="lbl">Human checkpoint · low-confidence match</div>
-    <p style="margin:6px 0 0">A fax scan, <span class="mono">FAX_0412_p3.pdf</span>, looks like <b>loss runs for Cortland Tool &amp; Die</b> (named insured matches, policy number unreadable). Confidence 71%.</p>
-    <p style="margin:6px 0 0;color:var(--muted);font-size:14px">Why a human: attaching the wrong client's loss runs to a submission is a binding error that the checklist won't catch later. Below 90% confidence, the tool asks you before it attaches anything.</p>
-    <div class="row"><button class="btn primary" onclick="this.parentNode.innerHTML='<span class=&quot;tag t-ok&quot;>Attached by you · logged</span>'">Yes, attach to Cortland</button><button class="btn">Wrong submission</button><button class="btn">Open scan</button></div>
-  </div>
 </section>
 
-<section class="screen" id="s2">
-  <h1>Halvorsen Logistics · reconcile</h1>
-  <p class="sub">The checklist stays as it is. Values are pulled from each document and compared with each other, side by side.</p>
-  <p class="why"><b>Why this screen:</b> 23 of 61 (Anika) and 19 of 54 (Colin) submissions had a coverage-limit mismatch, about 36%. Today assistants catch these by reading carefully.</p>
-  <div class="grid">
-    <div class="card">
-      <h3 style="margin-top:0">Checklist</h3>
-      <label><input type="checkbox" checked disabled> Certificate of insurance received</label>
-      <label><input type="checkbox" checked disabled> Loss runs (5 yrs) received</label>
-      <label><input type="checkbox" checked disabled> Application signed</label>
-      <label><input type="checkbox" disabled> <span>Coverage limits match application <span class="tag t-bad">1 mismatch</span></span></label>
-      <label><input type="checkbox" checked disabled> Named insured consistent</label>
-    </div>
-    <div class="card">
-      <h3 style="margin-top:0">Mismatch found</h3>
-      <div class="cmp">
-        <div class="doc"><h3>Application</h3><span class="mono">Each occurrence: $1,000,000<br>Aggregate: <mark>$2,000,000</mark></span></div>
-        <div class="doc"><h3>Certificate (broker email, 3 Oct)</h3><span class="mono">Each occurrence: $1,000,000<br>Aggregate: <mark>$1,000,000</mark></span></div>
-      </div>
-      <div class="human">
-        <div class="lbl">Human checkpoint · confirm the discrepancy</div>
-        <p style="margin:6px 0 0;font-size:14px">The tool extracted these values; it can misread a scan. You confirm the mismatch is real before anyone emails the broker. A false flag costs a 2-day round trip.</p>
-        <div class="row"><button class="btn primary" onclick="go('s3')">Confirm mismatch → request from broker</button><button class="btn">Values are correct, misread</button></div>
-      </div>
-    </div>
+<!-- SCREEN 2 -->
+<section class="screen" id="s2" aria-labelledby="h1b">
+  <h1 id="h1b">The certificate covers half of what the client asked for.</h1>
+  <p class="sub"><span>Values read from each paper and compared for you</span><span class="metric mono"><svg width="14" height="14"><use href="#i-clock"/></svg>Found 0:00 · 36% of files have one</span></p>
+  <div class="band">
+    <div class="fig"><label><svg width="15" height="15"><use href="#i-file"/></svg>Application · aggregate</label><div class="num">$2,000,000</div><small>Signed by client, portal, 28 Sep</small></div>
+    <div class="ne" role="img" aria-label="does not equal"><svg width="26" height="26"><use href="#i-ne"/></svg></div>
+    <div class="fig"><label><svg width="15" height="15"><use href="#i-mail"/></svg>Certificate · aggregate</label><div class="num" style="color:var(--red)">$1,000,000</div><small>Broker email, 3 Oct</small></div>
   </div>
-</section>
-
-<section class="screen" id="s3">
-  <h1>Broker request &amp; bind</h1>
-  <p class="sub">A structured request with the exact discrepancy, tracked until the broker replies. Binding stays locked until every item is resolved.</p>
-  <p class="why"><b>Why this screen:</b> Anika's median wait from flag to broker reply is 2.1 days, and 9 submissions took more than 4 days. She calls this the part she hates.</p>
-  <div class="grid">
-    <div class="card">
-      <h3 style="margin-top:0">Request to broker · draft</h3>
-      <textarea aria-label="Email to broker">Hi Dana,
-
-For Halvorsen Logistics (GL), the certificate dated 3 Oct shows a $1,000,000 aggregate, but the signed application requests $2,000,000.
-
-Could you send a corrected certificate, or confirm the client accepted $1M? One-click upload link: bindflow.link/h7Kq
-
-Thanks,
-Anika</textarea>
-      <div class="human">
-        <div class="lbl">Human checkpoint · you send it</div>
-        <p style="margin:6px 0 0;font-size:14px">Drafted from the confirmed mismatch. Nothing goes to a broker without your approval: it's a client relationship, and the tone is yours.</p>
-        <div class="row"><button class="btn primary" onclick="this.closest('.human').innerHTML='<span class=&quot;tag t-ok&quot;>Sent 09:14 · auto-reminder in 24h if no reply</span>'">Approve &amp; send</button><button class="btn">Edit</button></div>
-      </div>
+  <div class="row r2">
+    <div class="card flat">
+      <h2>Binding checklist</h2>
+      <p class="hint" style="margin-bottom:14px">Unchanged from Bindwise. Ticked from the papers.</p>
+      <ul class="check">
+        <li><span class="box"><svg width="13" height="13"><use href="#i-check"/></svg></span>Certificate of insurance received</li>
+        <li><span class="box"><svg width="13" height="13"><use href="#i-check"/></svg></span>Loss runs, 5 years</li>
+        <li><span class="box"><svg width="13" height="13"><use href="#i-check"/></svg></span>Application signed</li>
+        <li class="warn"><span class="box x"><svg width="12" height="12"><use href="#i-alert"/></svg></span>Coverage limits match application</li>
+        <li><span class="box"><svg width="13" height="13"><use href="#i-check"/></svg></span>Named insured consistent</li>
+      </ul>
     </div>
-    <div class="card">
-      <h3 style="margin-top:0">Waiting on brokers</h3>
-      <table><tbody>
-        <tr><td>Halvorsen · Dana K.</td><td><span class="tag t-warn">0.1 d</span></td></tr>
-        <tr><td>Pine Ridge · loss runs</td><td><span class="tag t-warn">1.8 d · reminded</span></td></tr>
-        <tr><td>Marlow Freight · COI</td><td><span class="tag t-bad">4.3 d · escalate?</span></td></tr>
-      </tbody></table>
-      <p style="font-size:13px;color:var(--muted)">Assistants can see every open request in one place, and items over 4 days rise to the top.</p>
-      <h3>Bind</h3>
-      <label><input type="checkbox" id="c1" onchange="chk()"> Corrected certificate received &amp; values re-compared</label>
-      <label><input type="checkbox" id="c2" onchange="chk()"> I reviewed every flagged item on this submission</label>
-      <div class="human" style="margin-top:8px">
-        <div class="lbl">Human checkpoint · bind sign-off</div>
-        <p style="margin:6px 0 0;font-size:14px">Binding makes coverage active and it can't be undone, so a named assistant makes the final call. The tool never binds.</p>
-        <div class="row"><button class="btn primary" id="bind" disabled>Bind policy as Anika Shah</button></div>
+    <div class="decision">
+      <span class="seal"><svg width="16" height="16"><use href="#i-user"/></svg>Your call</span>
+      <h2>Is this mismatch real?</h2>
+      <p>Bindflow read these figures from a broker's PDF and can misread a scan. Confirm before anything goes to the broker: a false flag costs a two-day round trip.</p>
+      <div class="btns">
+        <button class="btn pri" data-go="3"><svg width="16" height="16"><use href="#i-arrow"/></svg>Yes, ask the broker</button>
+        <button class="btn sec">Misread, values match</button>
       </div>
     </div>
   </div>
 </section>
 
-<p class="foot">Prototype by Arerosuoghene Omujale for the <a href="https://ajaia.ai">Ajaia</a> Design Lead assessment. Sample data is illustrative.</p>
+<!-- SCREEN 3 -->
+<section class="screen" id="s3" aria-labelledby="h1c">
+  <h1 id="h1c">Send one clear request. Bind only when it's resolved.</h1>
+  <p class="sub"><span>Drafted from your confirmed mismatch</span><span class="metric mono"><svg width="14" height="14"><use href="#i-clock"/></svg>Tracked from day 0 · median was 2.1 d</span></p>
+  <div class="row r3">
+    <div class="decision">
+      <span class="seal"><svg width="16" height="16"><use href="#i-user"/></svg>Your call</span>
+      <h2>Send this to Dana at Keystone Brokerage?</h2>
+      <dl class="meta"><dt>To</dt><dd>Dana Kowalczyk · Keystone Brokerage</dd><dt>Subject</dt><dd>Halvorsen Logistics GL: aggregate limit on certificate</dd></dl>
+      <div class="letter">
+        <p>Hi Dana,</p>
+        <p>The certificate dated 3 Oct shows a $1,000,000 aggregate. The signed application requests $2,000,000.</p>
+        <span class="upl"><svg width="16" height="16"><use href="#i-file"/></svg><span>Upload corrected certificate<small>bindflow.link/h7Kq</small></span></span>
+        <p style="margin:0">Or reply to confirm the client accepted $1M.<br>Thanks, Anika</p>
+      </div>
+      <div class="btns" data-replace>
+        <button class="btn pri" data-done="Sent 09:14 · reminder in 24 h if no reply"><svg width="16" height="16"><use href="#i-mail"/></svg>Approve &amp; send</button>
+        <button class="btn sec">Edit</button>
+      </div>
+      <p class="foot">Nothing reaches a broker without you: it's your client relationship. If there's no reply in 24 h, Bindflow nudges and tells you.</p>
+    </div>
+    <div class="side">
+      <div class="card flat">
+        <h2>Waiting on brokers</h2>
+        <div class="wait">
+          <div><div class="l"><span>Halvorsen · Dana K.</span><b class="mono" style="color:var(--acc)">0.1 d</b></div><div class="track"><span style="width:3%;background:var(--acc)"></span><em style="left:80%"></em></div></div>
+          <div><div class="l"><span>Pine Ridge · loss runs</span><b class="mono" style="color:var(--amb)">1.8 d</b></div><div class="track"><span style="width:36%;background:var(--amb)"></span><em style="left:80%"></em></div></div>
+          <div><div class="l"><span>Marlow Freight · certificate</span><b class="mono" style="color:var(--red)">4.3 d</b></div><div class="track"><span style="width:86%;background:var(--red)"></span><em style="left:80%"></em></div></div>
+        </div>
+        <p class="hint" style="margin-top:12px;font-size:13px">Marker = 4 days. Past it, the file rises to the top for escalation.</p>
+      </div>
+      <div class="card">
+        <div class="lock"><svg width="18" height="18" id="lockic"><use href="#i-lock"/></svg><h2 style="margin:0" id="locktxt">Bind is locked</h2></div>
+        <label class="c"><input type="checkbox" class="bc">Corrected certificate received and re-compared</label>
+        <label class="c"><input type="checkbox" class="bc">I've reviewed every flag on this file</label>
+        <button class="btn bind" id="bind" disabled><svg width="16" height="16"><use href="#i-lock"/></svg>Bind policy as Anika Shah</button>
+        <div class="signed"><span class="seal light"><svg width="16" height="16"><use href="#i-user"/></svg>Your call</span>Binding can't be undone. A named person signs.</div>
+      </div>
+    </div>
+  </div>
+</section>
 </main>
+<footer>Prototype by Arerosuoghene Omujale for the <a href="https://ajaia.ai">Ajaia</a> Design Lead assessment · <a href="https://github.com/Ofego/ajaia-bindflow">Repo &amp; notes</a> · Sample data is illustrative.</footer>
+</div>
+</div>
 <script>
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===id));scrollTo(0,0)}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.s));
-function chk(){document.getElementById('bind').disabled=!(c1.checked&&c2.checked)}
+const crumbs={1:"Queue",2:"Halvorsen Logistics",3:"Halvorsen Logistics"};
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s'+n));
+  document.querySelectorAll('.steps button').forEach(b=>{const i=+b.dataset.go;b.classList.toggle('done',i<n);
+    if(i===n)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');
+    b.querySelector('.dot').innerHTML=i<n?'<svg width="12" height="12"><use href="#i-check"/></svg>':i;});
+  document.getElementById('crumb').textContent=crumbs[n];
+  window.scrollTo({top:0});document.getElementById('main').querySelector('#s'+n+' h1').focus({preventScroll:true});
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.go)));
+document.querySelectorAll('[data-done]').forEach(b=>b.addEventListener('click',()=>{
+  const wrap=b.closest('[data-replace]');wrap.innerHTML='<span class="done-msg" role="status"><svg width="16" height="16"><use href="#i-check"/></svg>'+b.dataset.done+'</span>';}));
+document.querySelectorAll('h1').forEach(h=>h.tabIndex=-1);
+const bcs=[...document.querySelectorAll('.bc')],bind=document.getElementById('bind');
+bcs.forEach(c=>c.addEventListener('change',()=>{const ok=bcs.every(x=>x.checked);bind.disabled=!ok;
+  document.getElementById('locktxt').textContent=ok?'Ready to bind':'Bind is locked';
+  bind.innerHTML='<svg width="16" height="16"><use href="'+(ok?'#i-check':'#i-lock')+'"/></svg>Bind policy as Anika Shah';}));
+bind.addEventListener('click',()=>{bind.outerHTML='<span class="pill p-grn" role="status" style="margin-top:6px"><svg width="14" height="14"><use href="#i-check"/></svg>Bound by Anika Shah · 09:41</span>';document.getElementById('locktxt').textContent='Policy bound';});
+go(1);
 </script>
 </body>
 </html>

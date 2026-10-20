@@ -12,7 +12,7 @@ Bindflow is designed around those three findings. AI does the slow, mechanical w
 
 - **Final designs (Figma):** https://www.figma.com/design/6xILGqurhKPLRyw19t8xMH/Gostride?node-id=31-2. Each screen has notes explaining the design thinking.
 - **Written submission:** [SUBMISSION.md](SUBMISSION.md). It covers the synthesis, the next interview questions, the design and the AI workflow note.
-- **Early clickable prototype:** [prototype/](prototype/index.html). It shows the same flow and checkpoints in an earlier visual style.
+- **Clickable prototype:** https://ofego.github.io/ajaia-bindflow/prototype/. It works on phone, tablet and desktop.
 - **Video:** link in SUBMISSION.md.
 
 ## 1 · Collect papers

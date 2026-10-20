@@ -2,7 +2,7 @@
 
 **Video:** [PASTE VIDEO LINK, with "Ajaia" in the title]
 **Final designs (Figma):** https://www.figma.com/design/6xILGqurhKPLRyw19t8xMH/Gostride?node-id=31-2  
-**Clickable prototype (early style):** https://ofego.github.io/ajaia-bindflow/prototype/  
+**Clickable prototype (responsive):** https://ofego.github.io/ajaia-bindflow/prototype/  
 **Repo:** https://github.com/Ofego/ajaia-bindflow
 **Candidate:** Arerosuoghene Omujale · Portfolio: https://ofego.design
 **Prepared for:** [Ajaia](https://ajaia.ai)
@@ -61,7 +61,7 @@ There is a smaller gap too. Anika's log reports 14 minutes to her first flag, bu
 ## Task 2. Design
 
 **Final designs (Figma):** https://www.figma.com/design/6xILGqurhKPLRyw19t8xMH/Gostride?node-id=31-2  
-**Clickable prototype (early style):** https://ofego.github.io/ajaia-bindflow/prototype/  
+**Clickable prototype (responsive):** https://ofego.github.io/ajaia-bindflow/prototype/  
 **Repo:** https://github.com/Ofego/ajaia-bindflow. It has three screens, with each human checkpoint marked by a purple "Your call" badge.
 
 ### User journey (Anika, one submission)
